@@ -13,7 +13,7 @@ function analysis(schema, _dis) {
 	$.each(properties, function(index, item){
 		var _tem = json2Template(index, item);
 		array.push(_tem);
-		htmlText += template2Html(_tem);
+		htmlText += addStartAndEnd(index, template2Html(_tem));
 	});
 	htmlText += "</form>";
 	
@@ -41,12 +41,13 @@ function json2Template(alias, entity) {
 function template2Html(template) {
 	var name = template.name;
 	var type = template.type;
-	var text = "<div class=\"form-group\">\r\n"
-	text += "<label for=\""+ name +"\" class=\"col-sm-2 control-label\">" + name + "</label>\r\n";
-	text += "<div class=\"col-sm-10\">\r\n";
+	//var text = "<div class=\"form-group\">\r\n"
+	//text += "<label for=\""+ name +"\" class=\"col-sm-2 control-label\">" + name + "</label>\r\n";
+	//text += "<div class=\"col-sm-10\">\r\n";
+	var text = "";
 	if(template.type == 'string' || template.type == 'integer') {
 		if(template.enum == undefined) {
-			text += "<input type=\"" + template.type + "\" class=\"form-control\" id=\"" + name + "\"";
+			text += "<input type=\"text\" class=\"form-control\" id=\"" + name + "\"";
 			if(template.default != undefined && template.default != 'undefined') {
 				text += "placeholder=\"" + template.default + "\">\r\n";
 			} else {
@@ -113,12 +114,53 @@ function template2Html(template) {
 		text += "</tbody>\r\n";
 		text += "</table>\r\n";
 	} else if(template.type == 'object') {
+		var floorDiv = "";
 		$.each(template.properties, function(title, item){
-			console.log(template2Html(json2Template(title, item)));
+			var floor = template2Html(json2Template(title, item));
+			console.log(floor);
+			floorDiv += addFloor(title, floor);
+			//console.log(floorDiv);
 		});
+		text += addFloorStartAndEnd(floorDiv);
 	}
 	
+	//text += "</div>\r\n</div>\r\n";
+	return text;
+}
+
+function addStartAndEnd(name, str) {
+	var text = "<div class=\"form-group\">\r\n"
+	text += "<label for=\""+ name +"\" class=\"col-sm-2 control-label\">" + name + "</label>\r\n";
+	text += "<div class=\"col-sm-10\">\r\n";
+	text += str;
 	text += "</div>\r\n</div>\r\n";
+	return text;
+}
+
+function addFloor(title, text) {
+	var result = "";
+	result += "<div class=\"row-fluid\">\r\n";
+	result += "<div class=\"span12\">\r\n";
+	result += "<div class=\"control-group\">\r\n";
+	result += "<label class=\"control-label\" style=\"display: inline-block; font-weight: bold;\">" + title + "</label>\r\n";
+	result += "<div class=\"controls\">\r\n";
+	result += text;
+	result += "</div>\r\n";
+	result += "</div>\r\n";
+	result += "</div>\r\n";
+	result += "</div>\r\n";
+	return result;
+}
+
+function addFloorStartAndEnd(middle) {
+	var text = "";
+	text += "<div class=\"well well-small\">\r\n";
+	text += "<div class=\"container-fluid\">\r\n";
+	text += "<div>\r\n";
+	text += middle;
+	text += "</div>\r\n";
+	text += "</div>\r\n";
+	text += "</div>\r\n";
 	return text;
 }
 
