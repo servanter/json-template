@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+ <head>
+
+  <title>Document</title>
+  
+  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <script type="text/javascript" src="http://auto.sohu.com/upload/201311mqauto/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="template.js"></script>
+
+ </head>
+ <body>
+  <div id="div1">
+	
+	
+  </div>
+
+<script type="text/javascript">
+//var test = '{"title": "Person","type": "object","properties": {"name1": {"type": "string","description": "First and Last name","minLength": 4,"default": "Jeremy Dorn"},"age": {"type": "integer","default": 25,"minimum": 18,"maximum": 99}, "gender" :{"type":"string", "enum":["man", "woman"]}, "pets":{"type":"array", "properties":{"category":{"type":"string", "enum":["dog", "cat"]}, "animal":{"type:":"string", "default":"your animal name"}} }}}';
+var test = '{"title": "Person","type": "object","properties": {"name1": {"type": "string","description": "First and Last name","minLength": 4,"default": "Jeremy Dorn"},"age": {"type": "integer","default": 25,"minimum": 18,"maximum": 99}, "gender" :{"type":"string", "enum":["man", "woman"]}, "pets":{"type":"array", "properties":{"category":{"type":"string", "default":"animal"}, "animal":{"type:":"string", "default":"your animal name"}} }, "address": {"type": "object", "properties":{"city":{"type":"string"}, "province":{"type":"string"}}}}}';
+	analysis(test, $('#div1'));
+	
+	
+  </script>
+
+ </body>
+</html>
