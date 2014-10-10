@@ -179,25 +179,58 @@ function generateJSON(obj){
 		result = result.substring(0, result.length - 1);
 	}
 	result = '{' + result + '}';
+	$(resText).text(result);
 	console.log(result);
 }
 
 function generateFloorJSON(str, item) {
-	var result = str;
-	var floor = $(item).find('.row-fluid');
-	if(floor != undefined && floor.length > 0) {
+				
 
+	var result = str;
+	//$($('.form-group')[4]).find('.col-sm-10>.well>.container-fluid>div>.row-fluid')
+
+
+
+	var floor = $(item).find('.col-sm-10>.well>.container-fluid>div>.row-fluid');
+	var allFloor = $(item).find('.well>.container-fluid>div>.row-fluid');
+	if((floor != undefined && floor.length > 0) || (allFloor != undefined && allFloor.length > 0)) {
+		var isInnerFloor = false;
+		if(floor == undefined || floor.length == 0) {
+			floor = allFloor;
+			isInnerFloor = true;
+		}
 		// nesting form
-		var label = $(item).find('.control-label');
-		if(label != undefined && label.length > 0) {
-			var floorText = generateFloorJSON(result + '"' + $(label[0]).text() + '":{', floor);
-			if(floorText.substring(floorText.length - 1) == ',') {
-				result = floorText.substring(0, floorText.length - 1) + '}';
+		$.each(floor, function(index, everyFloor){
+			var label = '';
+			if(index == 0) {
+				label = $(item).find('.control-label');
 			} else {
-				result = floorText + '}';
+				label = $(everyFloor).find('.control-label');
 			}
 			
+			if(label != undefined && label.length > 0) {
+				console.log(floor.length);
+				var labelV = $(label[0]).text();
+				if(isInnerFloor) {
+					result = generateFloorJSON(result, everyFloor);
+				} else {
+					var hasFloors = $(everyFloor).find('.well>.container-fluid>div>.row-fluid');
+					if(hasFloors == undefined || hasFloors.length == 0) {
+						result = generateFloorJSON(result, everyFloor);
+					} else {
+						result = generateFloorJSON(result + '"' + labelV + '":{', everyFloor);
+					}
+				}
+				
+			}
+		});
+		
+		if(result.substring(result.length - 1) == ',') {
+			result = result.substring(0, result.length - 1) + '}';
+		} else {
+			result = result + '}';
 		}
+		
 	} else {
 
 		// array
@@ -207,7 +240,7 @@ function generateFloorJSON(str, item) {
 			$.each(ths, function(index, item){
 				titles.push($(item).text());
 			});
-			console.log(titles);
+
 			var label = $(item).find('.control-label');
 			var labelVal = $(label[0]).text();
 			var values = $(item).find('table').find('.form-control');
@@ -216,7 +249,7 @@ function generateFloorJSON(str, item) {
 			$.each(values, function(index, item){
 				var i = index % titles.length;
 				text += generateJSONStr(titles[i], $(item).val());
-				console.log(index + "         " + text);
+				
 				if((index + 1) % titles.length == 0 || index + 1 == values.length) {
 					if(text.substring(text.length - 1) == ',') {
 						text = text.substring(0, text.length - 1);
@@ -238,7 +271,7 @@ function generateFloorJSON(str, item) {
 				result += generateJSONStr($(item2).attr('name'), $(item2).val());
 			});
 		}
-
+		console.log('111111111111          ' + result);
 	}
 	
 	
@@ -252,4 +285,3 @@ function generateJSONStr(key, value){
 function generateArrayJSONStr(key, value) {
 	return '"'+ key +'":' + value+ ',';
 }
-
