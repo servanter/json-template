@@ -5,27 +5,31 @@
   <title>Document</title>
   
   <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="template.css">
   <script type="text/javascript" src="http://auto.sohu.com/upload/201311mqauto/js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="template.js"></script>
 
  </head>
  <body>
-  <div id="div1">
+ <div class="row">
+  <div id="div1" class="col-md-6">
 	
 	
   </div>
 
 <script type="text/javascript">
-var test = '{"title": "Person","type": "object","properties": {"name1": {"type": "string","description": "First and Last name","minLength": 4,"default": "Jeremy Dorn"},"age": {"type": "integer","default": 25,"minimum": 18,"maximum": 99}, "gender" :{"type":"string", "enum":["man", "woman"]}, "pets":{"type":"array", "properties":{"category":{"type":"string", "enum":["dog", "cat"]}, "animal":{"type:":"string", "default":"your animal name"}} }}}';
-//var test = '{"title": "Person","type": "object","properties": {"name1": {"type": "string","description": "First and Last name","minLength": 4,"default": "Jeremy Dorn"},"age": {"type": "integer","default": 25,"minimum": 18,"maximum": 99}, "gender" :{"type":"string", "enum":["man", "woman"]}, "pets":{"type":"array", "properties":{"category":{"type":"string", "enum":["dog", "cat"]}, "animal":{"type:":"string", "default":"your animal name"}} }, "address": {"type": "object", "properties":{"city":{"type":"object", "properties":{"ip":{"type":"string"},"pets":{"type":"array", "properties":{"category":{"type":"string", "enum":["dog", "cat"]}, "animal":{"type:":"string", "default":"your animal name"}} }}}, "province":{"type":"string"}}}}}';
+//var test = '{"title": "Person","type": "object","properties": {"name1": {"type": "string","description": "First and Last name","minLength": 4,"default": "Jeremy Dorn"},"age": {"type": "integer","default": 25,"minimum": 18,"maximum": 99}, "gender" :{"type":"string", "enum":["man", "woman"]}, "pets":{"type":"array", "properties":{"category":{"type":"string", "enum":["dog", "cat"]}, "animal":{"type:":"string", "default":"your animal name"}} }}}';
+var test = '{"title": "Person","type": "object","properties": {"first-name": {"type": "string","description": "First and Last name","minLength": 4,"default": "Jeremy Dorn"},"age": {"type": "integer","default": 25,"minimum": 18,"maximum": 99}, "gender" :{"type":"string", "enum":["man", "woman"]}, "pets":{"type":"array", "properties":{"animal":{"type:":"string", "default":"your animal name"},"category":{"type":"string", "enum":["dog", "cat"]}} }, "address": {"type": "object", "properties":{ "province":{"type":"string"}, "city":{"type":"object", "properties":{"ip":{"type":"object", "properties":{"mac":{"type":"string","default":"225.225.225.225"}, "host":{"type":"string", "default":"127.0.0.1"}}},"pets":{"type":"array", "properties":{"category":{"type":"string", "enum":["dog", "cat"]}, "animal":{"type:":"string", "default":"your animal name"}} }}} }}}}';
 	analysis(test, $('#div1'));
 	
 	
   </script>
-	<button id="genBtn" type="button" class="btn btn-primary">generate JSON</button><br><br>
-	<div style="width:600px">
-		<textarea class="form-control" rows="6"></textarea>
+	
+	<div class="col-md-6">
+		<button id="genBtn" type="button" class="btn btn-primary">generate JSON</button><br><br>
+		<textarea id="resText" class="form-control" rows="6"></textarea>
 	<div>
+</div>
  </body>
 </html>

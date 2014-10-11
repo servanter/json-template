@@ -2,7 +2,33 @@ $(function(){
 	$('#genBtn').click(function(){
 		generateJSON($('#div1'));
 	});
+
+	$('.jt-btn-add').live('click', function(){
+		arrayAdd(this);
+	});
+	$('.jt-btn-del-last').live('click', function(){
+		arrayDelLast(this);
+	});
 });
+
+function arrayAdd(obj) {
+	var row = $(obj).parent().prev().find('tbody>tr')[0];
+	var text = '<tr>' + $(row).html() + '</tr>';
+	var tableBody = $(obj).parent().prev().find('tbody');
+	tableBody.append(text);
+	if($(obj).next().hasClass('disabled')) {
+		$(obj).next().toggleClass('disabled');
+	}
+}
+
+function arrayDelLast(obj) {
+	var row = $(obj).parent().prev().find('tbody>tr');
+	row[row.length - 1].remove();
+	var row = $(obj).parent().prev().find('tbody>tr');
+	if(row == undefined || row.length == 0 || row.length == 1) {
+		$(obj).toggleClass('disabled');
+	}
+}
 
 /**
  * analysis schema
@@ -30,7 +56,6 @@ function analysis(schema, _dis) {
  * json to template
  */
 function json2Template(alias, entity) {
-	//console.log(entity);
 	var template = new Object();
 	template.type = entity.type;
 	template.properties = entity.properties;
@@ -46,9 +71,6 @@ function json2Template(alias, entity) {
 function template2Html(template) {
 	var name = template.name;
 	var type = template.type;
-	//var text = "<div class=\"form-group\">\r\n"
-	//text += "<label for=\""+ name +"\" class=\"col-sm-2 control-label\">" + name + "</label>\r\n";
-	//text += "<div class=\"col-sm-10\">\r\n";
 	var text = "";
 	if(template.type == 'string' || template.type == 'integer') {
 		if(template.enum == undefined) {
@@ -118,18 +140,17 @@ function template2Html(template) {
 		text += "</tr>";
 		text += "</tbody>\r\n";
 		text += "</table>\r\n";
+		text += '<p><button type="button" class="jt-btn-add btn btn-success"><i class="glyphicon glyphicon-plus"></i> Add</button>&nbsp;&nbsp;&nbsp;<button type="button" class="jt-btn-del-last btn btn-danger disabled"><i class="glyphicon glyphicon-remove"></i> Del last</button></p>'
 	} else if(template.type == 'object') {
 		var floorDiv = "";
 		$.each(template.properties, function(title, item){
 			var floor = template2Html(json2Template(title, item));
-			//console.log(floor);
 			floorDiv += addFloor(title, floor);
-			//console.log(floorDiv);
 		});
 		text += addFloorStartAndEnd(floorDiv);
 	}
 	
-	//text += "</div>\r\n</div>\r\n";
+	
 	return text;
 }
 
@@ -157,15 +178,24 @@ function addFloor(title, text) {
 	return result;
 }
 
+var floorSize = 0;
 function addFloorStartAndEnd(middle) {
 	var text = "";
-	text += "<div class=\"well well-small\">\r\n";
+	if(floorSize % 2 == 0) {
+		
+		// change the bg color
+		text += "<div class=\"well well-small jt-bg-white\">\r\n";
+	} else {
+		text += "<div class=\"well well-small\">\r\n";
+	}
+	
 	text += "<div class=\"container-fluid\">\r\n";
 	text += "<div>\r\n";
 	text += middle;
 	text += "</div>\r\n";
 	text += "</div>\r\n";
 	text += "</div>\r\n";
+	floorSize++;
 	return text;
 }
 
@@ -184,15 +214,11 @@ function generateJSON(obj){
 }
 
 function generateFloorJSON(str, item) {
-				
-
 	var result = str;
-	//$($('.form-group')[4]).find('.col-sm-10>.well>.container-fluid>div>.row-fluid')
-
-
-
 	var floor = $(item).find('.col-sm-10>.well>.container-fluid>div>.row-fluid');
 	var allFloor = $(item).find('.well>.container-fluid>div>.row-fluid');
+	
+	var needEnd = 0;
 	if((floor != undefined && floor.length > 0) || (allFloor != undefined && allFloor.length > 0)) {
 		var isInnerFloor = false;
 		if(floor == undefined || floor.length == 0) {
@@ -200,36 +226,70 @@ function generateFloorJSON(str, item) {
 			isInnerFloor = true;
 		}
 		// nesting form
+		
 		$.each(floor, function(index, everyFloor){
-			var label = '';
-			if(index == 0) {
-				label = $(item).find('.control-label');
-			} else {
-				label = $(everyFloor).find('.control-label');
+			var label = $($(item).find('.control-label')[0]).text();
+			var innerInFloor = $(item).find('.well>.container-fluid>div>.row-fluid');
+			if(index != 0 || isInnerFloor) {
+				label = $($(everyFloor).find('.control-label')[0]).text();
+				innerInFloor = $(everyFloor).find('.well>.container-fluid>div>.row-fluid');
 			}
-			
-			if(label != undefined && label.length > 0) {
-				console.log(floor.length);
-				var labelV = $(label[0]).text();
-				if(isInnerFloor) {
+			console.log('2222222222   ' + label);
+			if(isInnerFloor) {
+				
+				// not need to add the outer label
+				
+				if(innerInFloor == undefined || innerInFloor.length == 0) {
 					result = generateFloorJSON(result, everyFloor);
 				} else {
-					var hasFloors = $(everyFloor).find('.well>.container-fluid>div>.row-fluid');
-					if(hasFloors == undefined || hasFloors.length == 0) {
-						result = generateFloorJSON(result, everyFloor);
+					result = generateFloorJSON(result + '"' + label + '":{', everyFloor);
+					
+
+					var nextNode = $(everyFloor).next();
+					if(nextNode == undefined || nextNode.length == 0) {
+						result = result.substring(0, result.length - 1);
+						result += '}';
 					} else {
-						result = generateFloorJSON(result + '"' + labelV + '":{', everyFloor);
+						var rows = $(everyFloor).find('row-fluid');
+						if(nextNode != undefined && nextNode.length > 0) {
+							result = result.substring(0, result.length - 1);
+							result += '}';
+						}
 					}
 				}
+
+			} else {
+
+				// need to add outer label
 				
+				if(innerInFloor == undefined || innerInFloor.length == 0) {
+					result = generateFloorJSON(result, everyFloor);
+					var nextNode = $(everyFloor).next();
+					if(nextNode == undefined || nextNode.length == 0) {
+						if(result.substring(result.length - 1) == ',') {
+							result = result.substring(0, result.length - 1);
+						}
+					}
+				} else {
+					result = generateFloorJSON(result + '"' + label + '":{', everyFloor);
+					var nextNode = $(everyFloor).next();
+					if(nextNode == undefined || nextNode.length == 0) {
+						result = result.substring(0, result.length - 1);
+						result += '}';
+					} else {
+						needEnd++;
+					}
+				}
 			}
+
+			
 		});
-		
-		if(result.substring(result.length - 1) == ',') {
-			result = result.substring(0, result.length - 1) + '}';
-		} else {
-			result = result + '}';
+		if(needEnd > 0) {
+			for(var i = 0; i < needEnd; i++) {
+				result += '}';
+			}
 		}
+		
 		
 	} else {
 
@@ -264,6 +324,7 @@ function generateFloorJSON(str, item) {
 			}
 			arr = '[' + arr + ']';
 			result += generateArrayJSONStr(labelVal, arr);
+			
 		} else {
 			
 			// simple input
@@ -273,8 +334,7 @@ function generateFloorJSON(str, item) {
 		}
 		console.log('111111111111          ' + result);
 	}
-	
-	
+
 	return result;
 }
 
