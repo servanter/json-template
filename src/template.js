@@ -217,7 +217,19 @@ function generateFloorJSON(str, item) {
 	var result = str;
 	var floor = $(item).find('.col-sm-10>.well>.container-fluid>div>.row-fluid');
 	var allFloor = $(item).find('.well>.container-fluid>div>.row-fluid');
-	
+	var floors = new Array();
+	if(allFloor != undefined && allFloor.length > 0) {
+		var f = allFloor[0];
+		floors.push(f);
+		
+		while($(f).next() != undefined && $(f).next().length != 0) {
+			f = $(f).next()[0];
+			floors.push(f);
+			
+		}
+	}
+	console.log(floors);
+	allFloor = floors;
 	var needEnd = 0;
 	if((floor != undefined && floor.length > 0) || (allFloor != undefined && allFloor.length > 0)) {
 		var isInnerFloor = false;
@@ -228,13 +240,14 @@ function generateFloorJSON(str, item) {
 		// nesting form
 		
 		$.each(floor, function(index, everyFloor){
+			
 			var label = $($(item).find('.control-label')[0]).text();
 			var innerInFloor = $(item).find('.well>.container-fluid>div>.row-fluid');
 			if(index != 0 || isInnerFloor) {
 				label = $($(everyFloor).find('.control-label')[0]).text();
 				innerInFloor = $(everyFloor).find('.well>.container-fluid>div>.row-fluid');
 			}
-			console.log('2222222222   ' + label);
+			
 			if(isInnerFloor) {
 				
 				// not need to add the outer label
@@ -253,7 +266,7 @@ function generateFloorJSON(str, item) {
 						var rows = $(everyFloor).find('row-fluid');
 						if(nextNode != undefined && nextNode.length > 0) {
 							result = result.substring(0, result.length - 1);
-							result += '}';
+							result += '},';
 						}
 					}
 				}
