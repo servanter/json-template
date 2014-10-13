@@ -1,5 +1,6 @@
 $(function(){
 	$('#genBtn').click(function(){
+		
 		generateJSON($('#div1'));
 	});
 
@@ -35,7 +36,6 @@ function arrayDelLast(obj) {
  */
 function analysis(schema, _dis) {
 	var template = eval("("+schema+")");
-	console.log(template);
 	var title = template.title;                // title
 	var description = template.description;    // description
 	var properties = template.properties;
@@ -74,7 +74,11 @@ function template2Html(template) {
 	var text = "";
 	if(template.type == 'string' || template.type == 'integer') {
 		if(template.enum == undefined) {
-			text += "<input type=\"text\" class=\"form-control\" id=\"" + name + "\" name=\"" + name + "\"";
+			var cls = "form-control";
+			if(template.type == 'integer') {
+				cls += " jt-int";
+			}
+			text += "<input type=\"text\" class=\""+ cls + "\" id=\"" + name + "\" name=\"" + name + "\"";
 			if(template.default != undefined && template.default != 'undefined') {
 				text += "placeholder=\"" + template.default + "\">\r\n";
 			} else {
@@ -200,17 +204,26 @@ function addFloorStartAndEnd(middle) {
 }
 
 function generateJSON(obj){
-	var result = '';
-	var formGroups = $(obj).find('.form-group');
-	$.each(formGroups, function(index, item){
-		result = generateFloorJSON(result, item);
-	});
-	if(result.substring(result.length - 1) == ',') {
-		result = result.substring(0, result.length - 1);
+	var intWidgets = $(".jt-int");
+	var resultArr = new Array();
+	$.each(intWidgets, function(index, item){
+		resultArr.push(checkInt(item));
+	}); 
+	var resultStr = resultArr.join(",");
+	if(resultStr.indexOf("false") < 0) {
+		var result = '';
+		var formGroups = $(obj).find('.form-group');
+		$.each(formGroups, function(index, item){
+			result = generateFloorJSON(result, item);
+		});
+		if(result.substring(result.length - 1) == ',') {
+			result = result.substring(0, result.length - 1);
+		}
+		result = '{' + result + '}';
+		$(resText).text(result);
+		console.log(result);
 	}
-	result = '{' + result + '}';
-	$(resText).text(result);
-	console.log(result);
+
 }
 
 function generateFloorJSON(str, item) {
@@ -228,7 +241,6 @@ function generateFloorJSON(str, item) {
 			
 		}
 	}
-	console.log(floors);
 	allFloor = floors;
 	var needEnd = 0;
 	if((floor != undefined && floor.length > 0) || (allFloor != undefined && allFloor.length > 0)) {
@@ -345,7 +357,7 @@ function generateFloorJSON(str, item) {
 				result += generateJSONStr($(item2).attr('name'), $(item2).val());
 			});
 		}
-		console.log('111111111111          ' + result);
+		
 	}
 
 	return result;
@@ -357,4 +369,8 @@ function generateJSONStr(key, value){
 
 function generateArrayJSONStr(key, value) {
 	return '"'+ key +'":' + value+ ',';
+}
+
+function activeGenBtn() {
+	$("#genBtn").removeClass("disabled");
 }
