@@ -23,19 +23,67 @@
 </ul>
 <h4>object</h4>
 <p>
-	&nbsp;&nbsp;如果此属性为object, 则该属性有子属性, 该属性为json object, 必须要有properties属性. 例如: {"location":{"type":"object", "properties":{"city":{"type":"string"}}}}
+	&nbsp;&nbsp;如果此属性为object, 则该属性有子属性, 该属性为json object, 必须要有properties属性. 例如: 
+	<pre>
+		{
+		    "location": {
+		        "type": "object",
+		        "properties": {
+		            "city": {
+		                "type": "string"
+		            }
+		        }
+		    }
+		}
+	</pre>
 </p>
 <h4>string</h4>
 <p>
-	&nbsp;&nbsp;如果此属性为string, 则该属性为单纯的input标签. 例如: {"city":{"type":"string"}}
+	&nbsp;&nbsp;如果此属性为string, 则该属性为单纯的input标签. 例如: 
+	<pre>
+		{
+		    "city": {
+		        "type": "string"
+		    }
+		}
+	</pre>
 </p>
 <h4>integer</h4>
 <p>
-	&nbsp;&nbsp;如果此属性为integer, 则该属性为单纯的input标签并带有检验数字类型. 例如: {"city":{"type":"integer"}}
+	&nbsp;&nbsp;如果此属性为integer, 则该属性为单纯的input标签并带有检验数字类型. 例如: 
+	<pre>
+		{
+		    "city": {
+		        "type": "integer"
+		    }
+		}
+	</pre>
 </p>
 <h4>array</h4>
 <p>
-	&nbsp;&nbsp;如果此属性为array, 则该属性为表格, 表格的"头"(th)为properties中的元素. 例如: {"pets":{"type":"array", "properties":{"animal":{"type:":"string", "default":"your animal name"},"category":{"type":"string", "enum":["dog", "cat"]}}}}, anaimal与category为th. 生成的字符串为json array.
+	&nbsp;&nbsp;如果此属性为array, 则该属性为表格, 表格的"头"(th)为properties中的元素. 例如: 
+	<pre>
+		{
+		    "pets": {
+		        "type": "array",
+		        "properties": {
+		            "animal": {
+		                "type:": "string",
+		                "default": "your animal name"
+		            },
+		            "category": {
+		                "type": "string",
+		                "enum": [
+		                    "dog",
+		                    "cat"
+		                ]
+		            }
+		        }
+		    }
+		}
+	
+	</pre>
+	anaimal与category为th. 生成的字符串为json array.
 </p>
 <h3>
   属性
@@ -51,9 +99,30 @@
 </p>
 <h4>enum</h4>
 <p>
-	&nbsp;&nbsp;标识该属性为select下拉框, enum中为每一个option. 例如:{"gender" :{"type":"string", "enum":["man", "woman"]}
+	&nbsp;&nbsp;标识该属性为select下拉框, enum中为每一个option. 例如:
+	<pre>
+		{
+		    "gender": {
+		        "type": "string",
+		        "enum": [
+		            "man",
+		            "woman"
+		        ]
+		    }
+		}
+	</pre>
 </p>
 <h4>default</h4>
 <p>
-	&nbsp;&nbsp;标识此属性default值.
+	&nbsp;&nbsp;标识此属性default值. 例如:
+	<pre>
+		{
+		    "city": {
+		        "type": "string",
+		        "default": "Bei jing"
+		    }
+		}
+	</pre>
 </p>
+
+<p><b>To be continued...</b></p>
