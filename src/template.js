@@ -76,39 +76,7 @@ function template2Html(template) {
 	var text = "";
 	if(template.type == 'string' || template.type == 'integer') {
 		if(template.enum == undefined) {
-			var extraText = "";
-			var cls = "form-control";
-			if(template.type == 'integer') {
-				cls += " jt-int";
-				if(template.min != undefined || template.max != undefined) {
-					cls += " jt-num-scope";
-					if(template.min != undefined) {
-						extraText += ' min="'+ template.min +'"';
-					}
-					if(template.max != undefined) {
-						extraText += ' max="'+ template.max +'"';
-					}
-				}
-				
-			} else {
-				if(template.min != undefined || template.max != undefined) {
-					cls += " jt-str-scope";
-					if(template.min != undefined) {
-						extraText += ' min="'+ template.min +'"';
-					}
-					if(template.max != undefined) {
-						extraText += ' max="'+ template.max +'"';
-					}
-				}
-			}
-		
-
-			text += "<input type=\"text\" class=\""+ cls + "\" id=\"" + name + "\" name=\"" + name + "\"";
-			if(template.default != undefined && template.default != 'undefined') {
-				text += "placeholder=\"" + template.default + "\"";
-			}
-			text += extraText;
-			text += ">\r\n";
+			text += addWidget(template);
 		} else {
 			text += "<select class=\"form-control\" name=\"" + name + "\">";
 			$.each(template.enum, function(index, item){
@@ -142,12 +110,8 @@ function template2Html(template) {
 					});
 					innerText += "</select></td>\r\n";
 				} else {
-					innerText += "<td><input type=\"text\" class=\"form-control\" name=\""+ title +"\"";
-					if(item.default != undefined && item.default != 'undefined') {
-						innerText += "placeholder=\"" + item.default + "\">\r\n";
-					} else {
-						innerText += ">\r\n";
-					}
+					innerText += "<td>";
+					innerText += addWidget(item);
 					innerText += "</td>\r\n";
 				}
 				
@@ -155,12 +119,8 @@ function template2Html(template) {
 			innerText += "</tr>\r\n";
 		} else {
 			$.each(template.properties, function(title, item){
-				innerText += "<td><input type=\"text\" class=\"form-control\" name=\""+ title +"\"";
-				if(item.default != undefined && item.default != 'undefined') {
-					innerText += "placeholder=\"" + item.default + "\">\r\n";
-				} else {
-					innerText += ">\r\n";
-				}
+				innerText += "<td>";
+				innerText += addWidget(item);
 				innerText += "</td>\r\n";
 			});
 			innerText += "</tr>\r\n";
@@ -183,6 +143,44 @@ function template2Html(template) {
 	return text;
 }
 
+function addWidget(template) {
+	var name = template.name;
+	var extraText = "";
+	var text = "";
+	var cls = "form-control";
+	if(template.type == 'integer') {
+		cls += " jt-int";
+		if(template.min != undefined || template.max != undefined) {
+			cls += " jt-num-scope";
+			if(template.min != undefined) {
+				extraText += ' min="'+ template.min +'"';
+			}
+			if(template.max != undefined) {
+				extraText += ' max="'+ template.max +'"';
+			}
+		}
+		
+	} else {
+		if(template.min != undefined || template.max != undefined) {
+			cls += " jt-str-scope";
+			if(template.min != undefined) {
+				extraText += ' min="'+ template.min +'"';
+			}
+			if(template.max != undefined) {
+				extraText += ' max="'+ template.max +'"';
+			}
+		}
+	}
+
+
+	text += "<input type=\"text\" class=\""+ cls + "\" id=\"" + name + "\" name=\"" + name + "\"";
+	if(template.default != undefined && template.default != 'undefined') {
+		text += "placeholder=\"" + template.default + "\"";
+	}
+	text += extraText;
+	text += ">\r\n";
+	return text;
+}
 function addStartAndEnd(name, str) {
 	var text = "<div class=\"form-group\">\r\n"
 	text += "<label for=\""+ name +"\" class=\"col-sm-2 control-label\">" + name + "</label>\r\n";
@@ -290,33 +288,51 @@ function generateFloorJSON(str, item) {
 			
 			var label = $($(item).find('.control-label')[0]).text();
 			var innerInFloor = $(item).find('.well>.container-fluid>div>.row-fluid');
-			if(index != 0 || isInnerFloor) {
+			if(index != 0 && allFloor.length > 0) {
 				label = $($(everyFloor).find('.control-label')[0]).text();
 				innerInFloor = $(everyFloor).find('.well>.container-fluid>div>.row-fluid');
 			}
-			
+			console.log(result);
 			if(isInnerFloor) {
 				
 				// not need to add the outer label
 				
 				if(innerInFloor == undefined || innerInFloor.length == 0) {
 					result = generateFloorJSON(result, everyFloor);
-				} else {
-					result = generateFloorJSON(result + '"' + label + '":{', everyFloor);
 					
-
+					// jedge if has next node
 					var nextNode = $(everyFloor).next();
 					if(nextNode == undefined || nextNode.length == 0) {
-						result = result.substring(0, result.length - 1);
-						result += '}';
-					} else {
-						var rows = $(everyFloor).find('row-fluid');
-						if(nextNode != undefined && nextNode.length > 0) {
+						if(result.substring(result.length - 1) == ',') {
 							result = result.substring(0, result.length - 1);
-							result += '},';
+						}
+						result += '}';
+
+						// jedge parent has next node
+						
+					} else {
+						if(result.substring(result.length - 1) != ',') {
+							result += ",";
 						}
 					}
+					console.log("inner false======" + result);
+				} else {
+					result = generateFloorJSON(result + '"' + label + '":{', everyFloor);
+					var nextNode = $(everyFloor).next();
+					if(nextNode == undefined || nextNode.length == 0) {
+						if(result.substring(result.length - 1) == ',') {
+							result = result.substring(0, result.length - 1);
+						}
+						result += '}';
+					} else {
+						if(result.substring(result.length - 1) != ',') {
+							result += ",";
+						}
+						
+					}
+					console.log("inner true======" + result);
 				}
+				
 
 			} else {
 
@@ -329,22 +345,36 @@ function generateFloorJSON(str, item) {
 						if(result.substring(result.length - 1) == ',') {
 							result = result.substring(0, result.length - 1);
 						}
+					} else {
+						if(result.substring(result.length - 1) != ',') {
+							result += ",";
+						}
 					}
+
+					console.log("outer false======" + result);
 				} else {
 					result = generateFloorJSON(result + '"' + label + '":{', everyFloor);
 					var nextNode = $(everyFloor).next();
 					if(nextNode == undefined || nextNode.length == 0) {
-						result = result.substring(0, result.length - 1);
-						result += '}';
+						if(result.substring(result.length - 1) == ',') {
+							result = result.substring(0, result.length - 1);
+						}
+						
 					} else {
-						needEnd++;
+						if(result.substring(result.length - 1) != ',') {
+							result += ",";
+							needEnd++;
+						}
 					}
+					console.log("outer true======" + result);
 				}
 			}
-
+			
+			
 			
 		});
 		if(needEnd > 0) {
+			console.log(needEnd);
 			for(var i = 0; i < needEnd; i++) {
 				result += '}';
 			}
@@ -383,6 +413,9 @@ function generateFloorJSON(str, item) {
 				arr = arr.substring(0, arr.length - 1);
 			}
 			arr = '[' + arr + ']';
+			if(result.substring(result.length - 1) != ',') {
+				result += ",";
+			}
 			result += generateArrayJSONStr(labelVal, arr);
 			
 		} else {
