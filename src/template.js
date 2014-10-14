@@ -62,6 +62,8 @@ function json2Template(alias, entity) {
 	template.name = alias;
 	template.default = entity.default;
 	template.enum = entity.enum;
+	template.min = entity.min;
+	template.max = entity.max;
 	return template;
 }
 
@@ -74,16 +76,39 @@ function template2Html(template) {
 	var text = "";
 	if(template.type == 'string' || template.type == 'integer') {
 		if(template.enum == undefined) {
+			var extraText = "";
 			var cls = "form-control";
 			if(template.type == 'integer') {
 				cls += " jt-int";
+				if(template.min != undefined || template.max != undefined) {
+					cls += " jt-num-scope";
+					if(template.min != undefined) {
+						extraText += ' min="'+ template.min +'"';
+					}
+					if(template.max != undefined) {
+						extraText += ' max="'+ template.max +'"';
+					}
+				}
+				
+			} else {
+				if(template.min != undefined || template.max != undefined) {
+					cls += " jt-str-scope";
+					if(template.min != undefined) {
+						extraText += ' min="'+ template.min +'"';
+					}
+					if(template.max != undefined) {
+						extraText += ' max="'+ template.max +'"';
+					}
+				}
 			}
+		
+
 			text += "<input type=\"text\" class=\""+ cls + "\" id=\"" + name + "\" name=\"" + name + "\"";
 			if(template.default != undefined && template.default != 'undefined') {
-				text += "placeholder=\"" + template.default + "\">\r\n";
-			} else {
-				text += ">\r\n";
+				text += "placeholder=\"" + template.default + "\"";
 			}
+			text += extraText;
+			text += ">\r\n";
 		} else {
 			text += "<select class=\"form-control\" name=\"" + name + "\">";
 			$.each(template.enum, function(index, item){
@@ -205,10 +230,20 @@ function addFloorStartAndEnd(middle) {
 
 function generateJSON(obj){
 	var intWidgets = $(".jt-int");
+	var intScopes = $(".jt-num-scope");
+	var strScopes = $(".jt-str-scope");
 	var resultArr = new Array();
 	$.each(intWidgets, function(index, item){
-		resultArr.push(checkInt(item));
+		resultArr.push(checkNum(item));
 	}); 
+
+	$.each(intScopes, function(index, item){
+		resultArr.push(checkNumScope(item));
+	});
+	$.each(strScopes, function(index, item){
+		resultArr.push(checkStrScope(item));
+	});
+
 	var resultStr = resultArr.join(",");
 	if(resultStr.indexOf("false") < 0) {
 		var result = '';
