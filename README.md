@@ -92,6 +92,8 @@
 	<li>type</li>
 	<li>enum</li>
 	<li>default</li>
+	<li>min</li>
+	<li>max</li>
 </ul>
 <h4>type</h4>
 <p>
@@ -124,5 +126,30 @@
 		}
 	</pre>
 </p>
+<h4>min</h4>
+<p>
+	&nbsp;&nbsp;标识此属性最小值或最小长度.如果"type":"string", 那么min为最小长度;如果"type":"integer", 那么min为最小值, 例如:
+	<pre>
+		{
+		    "properties": {
+		        "first-name": {
+		            "type": "string",
+		            "description": "First and Last name",
+		            "min": 4,
+		            "max": "10",
+		            "default": "Jeremy Dorn"
+		        },
+		        "age": {
+		            "type": "integer",
+		            "default": 25,
+		            "min": 18,
+		            "max": 99
+		        }
+		    }
+		}
+	</pre>
+</p>
+<h4>max</h4>
+<p>&nbsp;&nbsp;标识此属性最大值或最大长度, 同上#min</p>
 
 <p><b>To be continued...</b></p>
