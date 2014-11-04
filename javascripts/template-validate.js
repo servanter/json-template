@@ -32,7 +32,7 @@ function checkNum(obj){
 			$(obj).parent().parent().addClass("has-error");
 		}
 		if($(obj).next().length == 0) {
-			$(obj).parent().append("<p class=\"help-block\">请输入数字.</p>");
+			$(obj).parent().append("<p class=\"help-block\">Please key in a number.</p>");
 		}
 		return false;
 	}
@@ -43,7 +43,7 @@ function checkNumScope(obj) {
 		var min = $(obj).attr('min');
 		if(min != undefined) {
 			if(parseInt($(obj).val()) < parseInt(min)) {
-				addHelpMsg(obj, "请输入大于" + min + "的数字.");
+				addHelpMsg(obj, "Please enter a number greater than " + min + ".");
 				return false;
 			} else {
 				removeHelpMsg(obj);
@@ -52,7 +52,7 @@ function checkNumScope(obj) {
 		var max = $(obj).attr('max');
 		if(max != undefined) {
 			if(parseInt($(obj).val()) > parseInt(max)) {
-				addHelpMsg(obj, "请输入小于" + max + "的数字.");
+				addHelpMsg(obj, "Please enter a number less than " + max + ".");
 				return false;
 			} else {
 				removeHelpMsg(obj);
@@ -67,7 +67,7 @@ function checkStrScope(obj) {
 	var min = $(obj).attr('min');
 	if(min != undefined) {
 		if(parseInt($(obj).val().length) < parseInt(min)) {
-			addHelpMsg(obj, "请输入大于" + min + "长度的字符.");
+			addHelpMsg(obj, "Please enter greater than "+ min +" characters.");
 			return false;
 		} else {
 			removeHelpMsg(obj);
@@ -77,7 +77,7 @@ function checkStrScope(obj) {
 	var max = $(obj).attr('max');
 	if(max != undefined) {
 		if(parseInt($(obj).val().length) > parseInt(max)) {
-			addHelpMsg(obj, "请输入小于" + max + "长度的字符.");
+			addHelpMsg(obj, "Please enter less than "+ max +" characters.");
 			return false;
 		} else {
 			removeHelpMsg(obj);
