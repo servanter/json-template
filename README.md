@@ -12,7 +12,7 @@
 	</ul>
 </p>
 <h2>JSON TEMPLATE 演示地址</h2>
-<p><a href="http://servanter.github.io/json-template/index.html">演示地址</a></p>
+<p><a href="http://servanter.github.io/json-template/index.html" target="_blank">演示地址</a></p>
 <h2>JSON TEMPLATE 快速入门</h2>
 <h3>
   数据类型
