@@ -152,6 +152,6 @@
 	</pre>
 </p>
 <h4>max</h4>
-<p>&nbsp;&nbsp;标识此属性最大值或最大长度, 同上#min</p>
+<p>&nbsp;&nbsp;标识此属性最大值或最大长度, 同上<a href="#min">min</a></p>
 
 <p><b>To be continued...</b></p>
